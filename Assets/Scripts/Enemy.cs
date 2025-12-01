@@ -5,7 +5,8 @@ public class Enemy : MonoBehaviour
     public float speed;
     public Rigidbody2D target;
 
-    bool isLive = true;
+    float health;
+    bool isLive;
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
@@ -34,5 +35,34 @@ public class Enemy : MonoBehaviour
             return;
 
         spriter.flipX = target.position.x < rigid.position.x;
+    }
+
+    void OnEnable()
+    {
+        target = GameManager.instance.player.GetComponent<Rigidbody2D>();
+        health = 100;
+        isLive = true;
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.CompareTag("Arrow"))
+            return;
+
+        health -= collision.GetComponent<Arrow>().damage;
+        if(health > 0)
+        {
+
+        }
+        else
+        {
+            Dead();
+        }
+    }
+
+    void Dead()
+    {
+        isLive = false;
+        gameObject.SetActive(false);
     }
 }
